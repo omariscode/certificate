@@ -1,7 +1,0 @@
-flask
-flask-cors
-pypdf2
-pandas
-reportlab
-flask-mail
-io
