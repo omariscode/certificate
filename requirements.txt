@@ -4,3 +4,4 @@ pypdf2
 pandas
 reportlab
 flask-mail
+gunicorn
