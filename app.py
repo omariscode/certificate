@@ -43,13 +43,13 @@ def verify_name(username):
             if nome_formatado in df_cleaned.values:
                 return True
             else:
-                flash('Seu nome não faz parte dos estudantes do CAF.', 'error')
+                print('Seu nome não faz parte dos estudantes do CAF.', 'error')
                 return False
         else:
-            flash('Coluna "Nome" não encontrada no arquivo Excel.', 'error')
+            print('Coluna "Nome" não encontrada no arquivo Excel.', 'error')
             return False
     except Exception as e:
-        flash(f'Erro ao ler o arquivo Excel: {e}', 'danger')
+        print(f'Erro ao ler o arquivo Excel: {e}', 'danger')
         return False    
 
 def format_full_name(username):
@@ -126,9 +126,9 @@ def index():
 
         try:
             mail.send(msg)
-            flash('E-mail enviado com sucesso!')
+            print('E-mail enviado com sucesso!')
         except Exception as e:
-            flash(f'Falha ao enviar o e-mail: {str(e)}', 'error')
+            print(f'Falha ao enviar o e-mail: {str(e)}', 'error')
 
     return make_response(jsonify({
         "detail": "doc created"
