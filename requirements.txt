@@ -5,4 +5,4 @@ pandas
 reportlab
 flask-mail
 gunicorn
- openpyxl
+openpyxl
