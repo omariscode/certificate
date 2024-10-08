@@ -6,3 +6,4 @@ reportlab
 flask-mail
 gunicorn
 openpyxl
+smtplib
