@@ -1,23 +1,16 @@
 import PyPDF2
+import smtplib
 import pandas as pd
 from io import BytesIO
 from flask_cors import CORS
 from reportlab.pdfgen import canvas
-from flask_mail import Message, Mail
+from email.mime.text import MIMEText
 from reportlab.lib.pagesizes import letter
-from flask import Flask, render_template, redirect, url_for, request, flash, jsonify, make_response
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
+from flask import Flask, request, jsonify, make_response
 
 app = Flask(__name__)
-
-app.config['SECRET_KEY'] = 'djnjendfu31nd'
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'  
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'omarscode007@gmail.com'  
-app.config['MAIL_PASSWORD'] = 'onys bhbi rgou kmlu' 
-app.config['MAIL_DEFAULT_SENDER'] = 'omarscode007@gmail.com'
-
-mail = Mail(app)
 CORS(app)
 
 def verify_name(username):
@@ -27,7 +20,7 @@ def verify_name(username):
         if 'Nome' in df.columns:
             partes_nome = username.strip().lower().split()
             if len(partes_nome) < 2:
-                flash('Por favor, insira um nome válido com pelo menos um primeiro e último nome.', 'error')
+                print('Por favor, insira um nome válido com pelo menos um primeiro e último nome.', 'error')
                 return False
             
             primeiro_nome = partes_nome[0]
@@ -70,6 +63,31 @@ def format_full_name(username):
 
     return nome_formatado
 
+def send_email_with_pdf(username, email, pdf_content):
+    try:
+        sender_email = "omarscode007@gmail.com"
+        sender_password = 'onys bhbi rgou kmlu'
+        subject = 'Seu Certificado de Participação'
+        body = f"Olá {username},\n\nAqui está o seu certificado de participação."
+
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = email
+        msg['Subject'] = subject
+        msg.attach(MIMEText(body, 'plain'))
+
+        attachment = MIMEApplication(pdf_content, _subtype="pdf")
+        attachment.add_header('Content-Disposition', 'attachment', filename='certificado.pdf')
+        msg.attach(attachment)
+
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls()
+            server.login(sender_email, sender_password)
+            server.send_message(msg)
+            print('E-mail enviado com sucesso!')
+    except Exception as e:
+        print(f'Erro ao enviar e-mail: {e}')
+
 @app.route('/', methods=['POST'])
 def index():
     if request.method == 'POST':
@@ -83,52 +101,42 @@ def index():
             return jsonify({'error': 'Todos os campos devem ser preenchidos.'}), 400
         else:
             if verify_name(username):
-                print('Certificado adquirido com sucesso.', 'success')
-                return jsonify({'success': True, 'message': 'Certificado gerado com sucesso!'}), 201
+                print(f'Certificado adquirido com sucesso., {email}', 'success')
             else:
                 print('Nome não encontrado na lista dos estudantes do CAF.', 'error')
                 return jsonify({'success': False, 'message': 'Nome não encontrado na lista dos estudantes do CAF.'}), 404
 
-    with open("./White Gold Elegant Modern Certificate of Participation.pdf", "rb") as f:
-        pdf_bytes = f.read()
+        with open("./White Gold Elegant Modern Certificate of Participation.pdf", "rb") as f:
+            pdf_bytes = f.read()
 
-        pdf_reader = PyPDF2.PdfReader(BytesIO(pdf_bytes))
-        pdf_writer = PyPDF2.PdfWriter()
+            pdf_reader = PyPDF2.PdfReader(BytesIO(pdf_bytes))
+            pdf_writer = PyPDF2.PdfWriter()
 
-        page = pdf_reader.pages[0]
+            page = pdf_reader.pages[0]
 
-        nome_certificado = format_full_name(username)
+            nome_certificado = format_full_name(username)
 
-        packet = BytesIO()
-        can = canvas.Canvas(packet, pagesize=letter)
+            packet = BytesIO()
+            can = canvas.Canvas(packet, pagesize=letter)
 
-        can.setFont("Helvetica", 50)
-        can.drawString(200, 300, nome_certificado)
-        can.save()
+            can.setFont("Helvetica", 50)
+            can.drawString(200, 300, nome_certificado)
+            can.save()
 
-        packet.seek(0)
+            packet.seek(0)
 
-        new_pdf = PyPDF2.PdfReader(packet)
+            new_pdf = PyPDF2.PdfReader(packet)
 
-        page.merge_page(new_pdf.pages[0])
-        pdf_writer.add_page(page)
+            page.merge_page(new_pdf.pages[0])
+            pdf_writer.add_page(page)
 
-        final_pdf = BytesIO()
-        pdf_writer.write(final_pdf)
-        final_pdf.seek(0)
+            final_pdf = BytesIO()
+            pdf_writer.write(final_pdf)
+            final_pdf.seek(0)
 
-        msg = Message('Seu Certificado de Participação',
-                      recipients=[email])
+            send_email_with_pdf(username, email, final_pdf.read())
 
-        msg.body = f"Olá {username},\n\nAqui está o seu certificado de participação."
-        
-        msg.attach('certificado.pdf', 'application/pdf', final_pdf.read())
-
-        try:
-            mail.send(msg)
-            print('E-mail enviado com sucesso!')
-        except Exception as e:
-            print(f'Falha ao enviar o e-mail: {str(e)}', 'error')
+            return jsonify({'success': True, 'message': 'Certificado enviado por e-mail com sucesso!'}), 201
 
     return make_response(jsonify({
         "detail": "doc created"
