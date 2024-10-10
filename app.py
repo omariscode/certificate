@@ -106,7 +106,7 @@ def index():
                 print('Nome não encontrado na lista dos estudantes do CAF.', 'error')
                 return jsonify({'success': False, 'message': 'Nome não encontrado na lista dos estudantes do CAF.'}), 404
 
-        with open("./White Gold Elegant Modern Certificate of Participation.pdf", "rb") as f:
+        with open("./Index.pdf", "rb") as f:
             pdf_bytes = f.read()
 
             pdf_reader = PyPDF2.PdfReader(BytesIO(pdf_bytes))
@@ -119,8 +119,8 @@ def index():
             packet = BytesIO()
             can = canvas.Canvas(packet, pagesize=letter)
 
-            can.setFont("Helvetica", 50)
-            can.drawString(200, 300, nome_certificado)
+            can.setFont("Times New Roman", 35)
+            can.drawString(50, 350, nome_certificado)
             can.save()
 
             packet.seek(0)
