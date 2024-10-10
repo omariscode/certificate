@@ -119,7 +119,7 @@ def index():
             packet = BytesIO()
             can = canvas.Canvas(packet, pagesize=letter)
 
-            can.setFont("Times New Roman", 35)
+            can.setFont("Helvetica", 35)
             can.drawString(50, 350, nome_certificado)
             can.save()
 
