@@ -175,10 +175,20 @@ certificate_type = None
 
 #         return jsonify({'success': True, 'message': 'Certificado enviado por e-mail com sucesso!'}), 201
     
+def abbreviate_name(name):
+    parts = name.strip().split()
+    if len(parts) <= 2:
+        return name
+    abbreviated = [parts[0]]
+    for p in parts[1:-1]:
+        abbreviated.append(f"{p[0]}.")
+    abbreviated.append(parts[-1])
+    return " ".join(abbreviated)
+
 @app.post('/participants')
 def partcipants():
     user_data = request.get_json()
-    username = user_data.get('name')
+    username = abbreviate_name(user_data.get('name', ''))
     email = user_data.get('email')
 
     with open("certificates/gensummit/Digital.pdf", "rb") as f:
@@ -189,15 +199,16 @@ def partcipants():
 
         page = pdf_reader.pages[0]
 
+        page_w = float(pdf_reader.pages[0].mediabox.width)
+        page_h = float(pdf_reader.pages[0].mediabox.height)
+
         packet = BytesIO()
-        can = canvas.Canvas(packet, pagesize=letter)
+        can = canvas.Canvas(packet, pagesize=(page_w, page_h))
 
-        can.setFont(font_name, font_size)
+        can.setFont(font_name, 220)
+        can.setFillColorRGB(0.83, 0.69, 0.22)  # dourado
 
-        if fill_color:
-            can.setFillColorRGB(*fill_color)
-
-        can.drawString(x, y, username)
+        can.drawCentredString(page_w / 2, 1300, username)
         can.save()
 
         packet.seek(0)
