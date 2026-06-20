@@ -2,5 +2,6 @@ flask
 flask-cors
 pypdf2
 reportlab
-flask-mail
 gunicorn
+sib-api-v3-sdk
+python-dotenv

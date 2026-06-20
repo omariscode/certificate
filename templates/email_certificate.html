@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificado</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f8;font-family:'Segoe UI',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f8;padding:30px 10px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+          <tr>
+            <td style="background:linear-gradient(135deg,#1E3A8A,#3B82F6);border-radius:16px 16px 0 0;padding:40px 30px 30px;text-align:center;">
+              <h1 style="color:#ffffff;font-size:28px;margin:0 0 8px;font-weight:700;">Certificado — Next Gen Summit</h1>
+              <p style="color:#93C5FD;font-size:15px;margin:0;">Academia Metanoia</p>
+              <p style="color:#BFDBFE;font-size:13px;margin:8px 0 0;">Next Gen Summit 2026</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#ffffff;padding:40px 35px;border-radius:0 0 16px 16px;box-shadow:0 4px 20px rgba(0,0,0,.06);">
+              <p style="font-size:18px;color:#333;margin:0 0 20px;">Olá <strong style="color:#2563EB;">{{ username }}</strong>,</p>
+              <p style="font-size:15px;color:#555;line-height:1.6;margin:0 0 20px;">
+                Parabéns! O teu certificado de <strong>{{ certificate_type }}</strong> está pronto.
+                Em anexo encontras o PDF com o teu certificado.
+              </p>
+              <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:12px;padding:20px;margin:0 0 25px;">
+                <p style="font-size:14px;color:#1E3A8A;margin:0 0 8px;"><strong>Detalhes</strong></p>
+                <table cellpadding="4" cellspacing="0" style="font-size:14px;color:#555;">
+                  <tr><td style="padding:2px 10px 2px 0;color:#64748B;">Tipo</td><td>{{ certificate_type }}</td></tr>
+                  <tr><td style="padding:2px 10px 2px 0;color:#64748B;">Participante</td><td>{{ username }}</td></tr>
+                </table>
+              </div>
+              <p style="font-size:14px;color:#777;line-height:1.5;margin:0;">
+                Se tiveres alguma dúvida, responde a este e-mail ou fala com a organização.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:25px 20px;">
+              <p style="font-size:12px;color:#aaa;margin:0;">
+                Academia Metanoia &bull; Next Gen Summit 2026<br>
+                Este e-mail foi enviado automaticamente, por favor não responds diretamente.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
